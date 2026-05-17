@@ -101,7 +101,7 @@ while True:
         bullets.update()
 
 
-        if sprite.spritecollide(player, enemys, False):
+        if sprite.spritecollide(player, enemys, False) or lost >= 3:
             window.blit(my_font2.render('Ты проиграл!', True, (255, 0, 0)), (200, 250))
             finish = True
 
