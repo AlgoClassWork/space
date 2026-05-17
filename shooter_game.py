@@ -60,10 +60,11 @@ for i in range(5):
 
 font.init()
 my_font = font.SysFont('Arial', 36)
+my_font2 = font.SysFont('Arial', 72)
 
 
 clock = time.Clock()
-
+finish = False
 while True:
 
     for e in event.get():
@@ -72,32 +73,48 @@ while True:
         elif e.type == KEYDOWN:
             if e.key == K_SPACE:
                 player.fire()
-
-    score_text = my_font.render('Счет: ' + str(score), True, (255, 255, 255))
-    lost_text = my_font.render('Пропущено: ' + str(lost), True, (255, 255, 255))
-
-    window.blit(background, (0, 0))
-    window.blit(score_text, (10, 10))
-    window.blit(lost_text, (10, 40))
-
-    player.reset()
-    enemys.draw(window)
-    bullets.draw(window)
-
-    player.update()
-    enemys.update()
-    bullets.update()
-
-
-    if sprite.spritecollide(player, enemys, False):
-        print('Ты проиграл!')
-
-
-    if sprite.groupcollide(enemys, bullets, True, True):
-        enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
-        enemys.add(enemy)
-        score += 1
+            elif e.key == K_r:
+                finish = False
+                score = 0
+                lost = 0
+                enemys.empty()
+                bullets.empty()
+                for i in range(5):
+                    enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
+                    enemys.add(enemy)
         
+
+    if not finish:
+        score_text = my_font.render('Счет: ' + str(score), True, (255, 255, 255))
+        lost_text = my_font.render('Пропущено: ' + str(lost), True, (255, 255, 255))
+
+        window.blit(background, (0, 0))
+        window.blit(score_text, (10, 10))
+        window.blit(lost_text, (10, 40))
+
+        player.reset()
+        enemys.draw(window)
+        bullets.draw(window)
+
+        player.update()
+        enemys.update()
+        bullets.update()
+
+
+        if sprite.spritecollide(player, enemys, False):
+            window.blit(my_font2.render('Ты проиграл!', True, (255, 0, 0)), (200, 250))
+            finish = True
+
+
+        if sprite.groupcollide(enemys, bullets, True, True):
+            enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
+            enemys.add(enemy)
+            score += 1
+            
+        if score >= 10:
+            window.blit(my_font2.render('Ты выиграл!', True, (0, 255, 0)), (200, 250))
+            finish = True
+
 
     display.update()
     clock.tick(60)
