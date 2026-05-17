@@ -1,4 +1,5 @@
 #Создай собственный Шутер!
+from random import randint
 from pygame import *
 
 class GameSprite(sprite.Sprite):
@@ -20,6 +21,13 @@ class Player(GameSprite):
             self.rect.x -= self.speed
         if keys[K_RIGHT] and self.rect.x < 615:
             self.rect.x += self.speed
+
+class Enemy(GameSprite):
+    def update(self):
+        self.rect.y += self.speed
+        if self.rect.y > 500:
+            self.rect.y = 0
+            self.rect.x = randint(80, 620)
     
 window = display.set_mode((700, 500))
 display.set_caption('Шутер')
@@ -27,7 +35,7 @@ display.set_caption('Шутер')
 background = transform.scale(image.load('galaxy.jpg'), (700, 500))
 
 player = Player('rocket.png', 5, 400, 80, 100, 10)
-enemy = GameSprite('ufo.png', 600, 100, 80, 50, 10)
+enemy = Enemy('ufo.png', 600, 100, 80, 50, 5)
 
 clock = time.Clock()
 
@@ -42,6 +50,7 @@ while True:
     enemy.reset()
 
     player.update()
+    enemy.update()
 
     display.update()
     clock.tick(60)
