@@ -79,5 +79,10 @@ while True:
         print('Ты проиграл!')
 
 
+    if sprite.groupcollide(enemys, bullets, True, True):
+        enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
+        enemys.add(enemy)
+        
+
     display.update()
     clock.tick(60)
