@@ -22,12 +22,22 @@ class Player(GameSprite):
         if keys[K_RIGHT] and self.rect.x < 615:
             self.rect.x += self.speed
 
+    def fire(self):
+        bullet = Bullet('bullet.png', self.rect.centerx, self.rect.top, 15, 20, 15)
+        bullets.add(bullet)
+
 class Enemy(GameSprite):
     def update(self):
         self.rect.y += self.speed
         if self.rect.y > 500:
             self.rect.y = 0
             self.rect.x = randint(80, 620)
+
+class Bullet(GameSprite):
+    def update(self):
+        self.rect.y -= self.speed
+        if self.rect.y < 0:
+            self.kill()
     
 window = display.set_mode((700, 500))
 display.set_caption('Шутер')
@@ -36,8 +46,10 @@ background = transform.scale(image.load('galaxy.jpg'), (700, 500))
 
 player = Player('rocket.png', 5, 400, 80, 100, 10)
 
+bullets = sprite.Group()
+
 enemys = sprite.Group()
-for i in range(1, 6):
+for i in range(5):
     enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
     enemys.add(enemy)
 
@@ -48,14 +60,20 @@ while True:
     for e in event.get():
         if e.type == QUIT:
             quit()
+        elif e.type == KEYDOWN:
+            if e.key == K_SPACE:
+                player.fire()
 
     window.blit(background, (0, 0))
 
     player.reset()
     enemys.draw(window)
+    bullets.draw(window)
 
     player.update()
     enemys.update()
+    bullets.update()
+
 
     if sprite.spritecollide(player, enemys, False):
         print('Ты проиграл!')
