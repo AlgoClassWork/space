@@ -2,6 +2,9 @@
 from random import randint
 from pygame import *
 
+score = 0
+lost = 0
+
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, size_x, size_y, player_speed):
         super().__init__()
@@ -28,11 +31,13 @@ class Player(GameSprite):
 
 class Enemy(GameSprite):
     def update(self):
+        global lost
         self.rect.y += self.speed
         if self.rect.y > 500:
             self.rect.y = 0
             self.rect.x = randint(80, 620)
-
+            lost += 1
+            
 class Bullet(GameSprite):
     def update(self):
         self.rect.y -= self.speed
@@ -53,6 +58,10 @@ for i in range(5):
     enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
     enemys.add(enemy)
 
+font.init()
+my_font = font.SysFont('Arial', 36)
+
+
 clock = time.Clock()
 
 while True:
@@ -64,7 +73,12 @@ while True:
             if e.key == K_SPACE:
                 player.fire()
 
+    score_text = my_font.render('Счет: ' + str(score), True, (255, 255, 255))
+    lost_text = my_font.render('Пропущено: ' + str(lost), True, (255, 255, 255))
+
     window.blit(background, (0, 0))
+    window.blit(score_text, (10, 10))
+    window.blit(lost_text, (10, 40))
 
     player.reset()
     enemys.draw(window)
@@ -82,6 +96,7 @@ while True:
     if sprite.groupcollide(enemys, bullets, True, True):
         enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
         enemys.add(enemy)
+        score += 1
         
 
     display.update()
