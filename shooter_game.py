@@ -35,7 +35,11 @@ display.set_caption('Шутер')
 background = transform.scale(image.load('galaxy.jpg'), (700, 500))
 
 player = Player('rocket.png', 5, 400, 80, 100, 10)
-enemy = Enemy('ufo.png', 600, 100, 80, 50, 5)
+
+enemys = sprite.Group()
+for i in range(1, 6):
+    enemy = Enemy('ufo.png', randint(80, 620), -40, 80, 50, randint(1, 5))
+    enemys.add(enemy)
 
 clock = time.Clock()
 
@@ -46,11 +50,16 @@ while True:
             quit()
 
     window.blit(background, (0, 0))
+
     player.reset()
-    enemy.reset()
+    enemys.draw(window)
 
     player.update()
-    enemy.update()
+    enemys.update()
+
+    if sprite.spritecollide(player, enemys, False):
+        print('Ты проиграл!')
+
 
     display.update()
     clock.tick(60)
